@@ -1,232 +1,310 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>名片流浪计划</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>名片流浪计划</title>
 
-    <!-- 配置部分，提前加载 -->
-    <script>
-        const config = {
-            name: "崽子的名字填在这里",
-            species: "崽子的物种填在这里",
-            qq: "QQ号填在这里",
-            qqGroup: "QQ群号如果不填会隐藏",
-            addFriendLink: "加好友链接可以从二维码里面解析",
-            bio: "自我介绍随便填，只要不是太长就不会出事。",
-            theme: "red" // 可选 "red" 或 "blue"，主题选择
-        };
-    </script>
+  <!-- 配置部分，提前加载 -->
+<script>
+    // 配置对象开始：定义名片显示的各项信息
+    const config = {
+      name: "嗷呜", // 兽设名称，用于显示在名片顶部
+      species: "龙", // 物种
+      qq: "123456789", // QQ号码，用于头像生成及显示
+      qqGroup: "987654321", // QQ群号码，若留空则不显示QQ群信息
+      addFriendLink: "可以从加好友二维码解析", // 一键扩列的链接地址
+      bio: "这是一个自我介绍字段，可以在配置文件自定义，可以写很长，会自动换行", // 个人简介或自我描述
+      theme: "red", // 主题颜色：可选 "red"（默认）、"blue"、"orange"、"purple"
+      bilibili: "114514" // B站 UID，若为空则不显示B站相关信息
+    };
+    // 配置对象结束
+</script>
 
-    <style>
-        /* 默认红色主题 */
-        :root {
-            --primary: #ff7f9e;
-            --secondary: #6c5ce7;
-            --accent: #ffd700;
-            --info-bg: #f8f9fa;
-            --info-text: #333;
-            --bg-gradient-start: #ffafbd;
-            --bg-gradient-end: #ffc3a0;
-        }
-        /* 蓝色主题 */
-        .theme-blue {
-            --primary: #4a90e2;
-            --secondary: #3b5998;
-            --accent: #50e3c2;
-            --info-bg: #e3f2fd;
-            --info-text: #1a237e;
-            --bg-gradient-start: #6dd5fa;
-            --bg-gradient-end: #4a90e2;
-        }
-        body {
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
-            font-family: 'Comic Neue', cursive, 'Microsoft YaHei', sans-serif;
-        }
-        .card {
-            background: rgba(255,255,255,0.95);
-            padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            max-width: 400px;
-            transform: translateY(20px);
-            opacity: 0;
-            animation: cardEnter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            text-align: center;
-        }
-        @keyframes cardEnter {
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            margin: 0 auto 1.5rem;
-            border: 4px solid var(--primary);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            display: block;
-        }
-        .name {
-            font-size: 2em;
-            color: var(--secondary);
-            margin-bottom: 0.5rem;
-        }
-        .info {
-            padding: 1rem;
-            background: var(--info-bg);
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-            color: var(--info-text);
-            border: 1px solid rgba(0,0,0,0.1);
-            text-align: left;
-        }
-        .copy-btn {
-            display: inline-flex;
-            align-items: center;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 2px;
-            margin-left: 4px;
-            opacity: 0.6;
-            transition: opacity 0.3s;
-        }
-        .copy-btn:hover {
-            opacity: 1;
-        }
-        .copy-btn svg {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
-        }
-        .add-friend-btn {
-            display: block;
-            width: calc(100% - 2rem);
-            padding: 0.8rem 1rem;
-            background: var(--primary);
-            color: white;
-            text-align: center;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: transform 0.3s, background 0.3s;
-            margin: 0 auto 1.5rem;
-        }
-        .add-friend-btn:hover {
-            transform: scale(1.05);
-            background: var(--secondary);
-        }
-        footer {
-            text-align: center;
-            color: #666;
-            font-size: 0.9em;
-            margin-top: 1.5rem;
-        }
-    </style>
+  <style>
+    /* 默认红色主题 */
+    :root {
+      --primary: #ff7f9e;
+      --secondary: #6c5ce7;
+      --accent: #ffd700;
+      --info-bg: #f8f9fa;
+      --info-text: #333;
+      --bg-gradient-start: #ffafbd;
+      --bg-gradient-end: #ffc3a0;
+    }
+    /* 蓝色主题 */
+    .theme-blue {
+      --primary: #4a90e2;
+      --secondary: #3b5998;
+      --accent: #50e3c2;
+      --info-bg: #e3f2fd;
+      --info-text: #1a237e;
+      --bg-gradient-start: #6dd5fa;
+      --bg-gradient-end: #4a90e2;
+    }
+    /* 橘色主题 */
+    .theme-orange {
+      --primary: #FFA500;
+      --secondary: #FF8C00;
+      --accent: #FFD700;
+      --info-bg: #FFF5E6;
+      --info-text: #333;
+      --bg-gradient-start: #FFB347;
+      --bg-gradient-end: #FFCC33;
+    }
+    /* 紫色主题 */
+    .theme-purple {
+      --primary: #9B59B6;
+      --secondary: #8E44AD;
+      --accent: #AF7AC5;
+      --info-bg: #F3E5F5;
+      --info-text: #333;
+      --bg-gradient-start: #C39BD3;
+      --bg-gradient-end: #9B59B6;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+      font-family: 'Comic Neue', cursive, 'Microsoft YaHei', sans-serif;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      max-width: 400px;
+      transform: translateY(20px);
+      opacity: 0;
+      animation: cardEnter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      text-align: center;
+    }
+    @keyframes cardEnter {
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin: 0 auto 1.5rem;
+      border: 4px solid var(--primary);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      display: block;
+    }
+    .name {
+      font-size: 2em;
+      color: var(--secondary);
+      margin-bottom: 0.5rem;
+    }
+    .info {
+      padding: 1rem;
+      background: var(--info-bg);
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      color: var(--info-text);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      text-align: left;
+    }
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 2px;
+      margin-left: 4px;
+      opacity: 0.6;
+      transition: opacity 0.3s, transform 0.1s;
+    }
+    .copy-btn:hover {
+      opacity: 1;
+    }
+    .copy-btn:active {
+      transform: scale(0.95);
+    }
+    .copy-btn:focus {
+      outline: none;
+    }
+    .copy-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+    .add-friend-btn {
+      display: block;
+      width: calc(100% - 2rem);
+      padding: 0.8rem 1rem;
+      background: var(--primary);
+      color: white;
+      text-align: center;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: transform 0.3s, background 0.3s;
+      margin: 0 auto 1.5rem;
+    }
+    .add-friend-btn:hover {
+      transform: scale(1.05);
+      background: var(--secondary);
+    }
+    .add-friend-btn:active {
+      transform: scale(0.98);
+    }
+    .add-friend-btn:focus {
+      outline: none;
+    }
+    footer {
+      text-align: center;
+      color: #666;
+      font-size: 0.9em;
+      margin-top: 1.5rem;
+    }
+  </style>
 </head>
 <body>
-    <div class="card" id="card">
-        <img id="avatar" class="avatar" alt="头像">
-        <h1 class="name"><span id="name"></span></h1>
-        
-        <div class="info">
-            🐾 物种: <span id="species"></span><br>
-            📱 QQ: <span id="qq"></span>
-            <button class="copy-btn" data-clipboard-text="">
-                <svg viewBox="0 0 24 24">
-                    <path d="M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12V1z"/>
-                </svg>
-            </button>
-            <br>
-            <span id="qqGroupInfo"></span>
-        </div>
+  <div class="card" id="card">
+    <img id="avatar" class="avatar" alt="头像">
+    <h1 class="name"><span id="name"></span></h1>
 
-        <p class="bio" id="bio"></p>
+    <div class="info">
+      🐾 物种: <span id="species"></span><br>
+      📱 QQ: <span id="qq"></span>
+      <button class="copy-btn" data-clipboard-text="">
+        <svg viewBox="0 0 24 24">
+          <path d="M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12V1z"/>
+        </svg>
+      </button>
 
-        <a id="addFriendBtn" class="add-friend-btn" target="_blank">
-            🐾 一键扩列
-        </a>
+      <!-- QQ群信息容器，初始为空，不含固定换行 -->
+      <span id="qqGroupContainer"></span>
 
-        <footer>
-            Framework developed by DeepSeek&ChatGPT<br>
-            云名片计划用❤️制作
-        </footer>
+      <!-- B站信息容器 -->
+      <span id="bilibiliContainer"></span>
     </div>
 
-    <script>
-        // 填充信息
-        document.title = `${config.name} - 名片流浪计划`;
-        document.getElementById('name').textContent = config.name;
-        document.getElementById('species').textContent = config.species;
-        document.getElementById('bio').textContent = config.bio;
-        document.getElementById('avatar').src = `http://q1.qlogo.cn/g?b=qq&nk=${config.qq}&s=640`;
-        document.getElementById('addFriendBtn').href = config.addFriendLink;
+    <p class="bio" id="bio"></p>
 
-        // 设置 QQ 号码及其复制按钮数据属性
-        const qqElement = document.getElementById('qq');
-        qqElement.textContent = config.qq;
-        const qqCopyBtn = qqElement.nextElementSibling;
-        qqCopyBtn.dataset.clipboardText = config.qq;
+    <a id="addFriendBtn" class="add-friend-btn" target="_blank">
+      🐾 一键扩列
+    </a>
 
-        // 处理QQ群，并添加复制按钮
-        if (config.qqGroup) {
-            const qqGroupInfo = document.getElementById('qqGroupInfo');
-            qqGroupInfo.innerHTML = `👥 QQ群: <span id="qqGroupNumber">${config.qqGroup}</span>`;
-            const groupCopyBtn = document.createElement('button');
-            groupCopyBtn.classList.add('copy-btn');
-            groupCopyBtn.dataset.clipboardText = config.qqGroup;
-            groupCopyBtn.innerHTML = `<svg viewBox="0 0 24 24">
-                    <path d="M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12V1z"/>
-                </svg>`;
-            qqGroupInfo.appendChild(groupCopyBtn);
-        }
+    <!-- 如果配置了 bilibili，则显示下面这个按钮 -->
+    <a id="bilibiliBtn" class="add-friend-btn" target="_blank" style="display: none;">
+      📺 B站主页
+    </a>
 
-        // 复制文本的回退方法（使用 execCommand）
-        function fallbackCopyTextToClipboard(text) {
-            const textArea = document.createElement("textarea");
-            textArea.value = text;
-            textArea.style.position = "fixed"; // 避免页面滚动
-            textArea.style.top = "0";
-            textArea.style.left = "0";
-            textArea.style.opacity = "0";
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            try {
-                document.execCommand('copy');
-                console.log('Fallback: 复制成功');
-            } catch (err) {
-                console.error('Fallback: 复制失败', err);
-            }
-            document.body.removeChild(textArea);
-        }
+    <footer>
+      Framework developed by DeepSeek&ChatGPT<br>
+      云名片计划用❤️制作(v2.0)
+    </footer>
+  </div>
 
-        // 绑定所有复制按钮：优先使用 Clipboard API，否则使用回退方法
-        document.querySelectorAll('.copy-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const text = btn.dataset.clipboardText;
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(text)
-                        .then(() => console.log('复制成功'))
-                        .catch(err => {
-                            console.error('Clipboard API 复制失败, 尝试回退方法', err);
-                            fallbackCopyTextToClipboard(text);
-                        });
-                } else {
-                    fallbackCopyTextToClipboard(text);
-                }
+  <script>
+    // 填充基本信息
+    document.title = `${config.name} - 名片流浪计划`;
+    document.getElementById('name').textContent = config.name;
+    document.getElementById('species').textContent = config.species;
+    document.getElementById('bio').textContent = config.bio;
+    document.getElementById('avatar').src = `http://q1.qlogo.cn/g?b=qq&nk=${config.qq}&s=640`;
+    document.getElementById('addFriendBtn').href = config.addFriendLink;
+
+    // 设置 QQ 号码及复制按钮数据属性
+    const qqElement = document.getElementById('qq');
+    qqElement.textContent = config.qq;
+    const qqCopyBtn = qqElement.nextElementSibling;
+    qqCopyBtn.dataset.clipboardText = config.qq;
+
+    // 动态添加QQ群信息（含换行），仅当有填写时插入
+    if (config.qqGroup && config.qqGroup.trim() !== "") {
+      const qqGroupContainer = document.getElementById('qqGroupContainer');
+      // 创建一个换行节点和信息节点
+      const brNode = document.createElement('br');
+      const infoNode = document.createElement('span');
+      infoNode.innerHTML = `👥 QQ群: <span id="qqGroupNumber">${config.qqGroup}</span>`;
+      // 添加复制按钮
+      const groupCopyBtn = document.createElement('button');
+      groupCopyBtn.classList.add('copy-btn');
+      groupCopyBtn.dataset.clipboardText = config.qqGroup;
+      groupCopyBtn.innerHTML = `<svg viewBox="0 0 24 24">
+                                  <path d="M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12V1z"/>
+                                </svg>`;
+      infoNode.appendChild(groupCopyBtn);
+      // 插入换行和信息节点
+      qqGroupContainer.appendChild(brNode);
+      qqGroupContainer.appendChild(infoNode);
+    }
+
+    // 处理 B站信息：动态添加 B站 UID 信息及复制按钮
+    if (config.bilibili && config.bilibili.trim() !== "") {
+      const bilibiliContainer = document.getElementById('bilibiliContainer');
+      const brNode = document.createElement('br');
+      const infoNode = document.createElement('span');
+      infoNode.innerHTML = `📺 B站: <span id="bilibiliUid">${config.bilibili}</span>`;
+      // 添加复制按钮
+      const bilibiliCopyBtn = document.createElement('button');
+      bilibiliCopyBtn.classList.add('copy-btn');
+      bilibiliCopyBtn.dataset.clipboardText = config.bilibili;
+      bilibiliCopyBtn.innerHTML = `<svg viewBox="0 0 24 24">
+                                      <path d="M19 21H8V7h11m0-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2m-3-4H4a2 2 0 0 0-2 2v14h2V3h12V1z"/>
+                                    </svg>`;
+      infoNode.appendChild(bilibiliCopyBtn);
+      bilibiliContainer.appendChild(brNode);
+      bilibiliContainer.appendChild(infoNode);
+
+      // 显示 B站主页按钮
+      const bilibiliBtn = document.getElementById('bilibiliBtn');
+      bilibiliBtn.href = "https://space.bilibili.com/" + config.bilibili;
+      bilibiliBtn.style.display = "block";
+    }
+
+    // 复制文本的回退方法（使用 execCommand）
+    function fallbackCopyTextToClipboard(text) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed"; // 避免页面滚动
+      textArea.style.top = "0";
+      textArea.style.left = "0";
+      textArea.style.opacity = "0";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        console.log('Fallback: 复制成功');
+      } catch (err) {
+        console.error('Fallback: 复制失败', err);
+      }
+      document.body.removeChild(textArea);
+    }
+
+    // 绑定所有复制按钮：优先使用 Clipboard API，否则使用回退方法
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const text = btn.dataset.clipboardText;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text)
+            .then(() => console.log('复制成功'))
+            .catch(err => {
+              console.error('Clipboard API 复制失败, 尝试回退方法', err);
+              fallbackCopyTextToClipboard(text);
             });
-        });
-
-        // 主题设置：根据配置修改整体背景（红/蓝主题）
-        if (config.theme === "blue") {
-            document.documentElement.classList.add('theme-blue');
+        } else {
+          fallbackCopyTextToClipboard(text);
         }
-    </script>
+      });
+    });
+
+    // 根据配置应用对应主题：蓝色、橘色、紫色或默认红色
+    if (config.theme === "blue") {
+      document.documentElement.classList.add('theme-blue');
+    } else if (config.theme === "orange") {
+      document.documentElement.classList.add('theme-orange');
+    } else if (config.theme === "purple") {
+      document.documentElement.classList.add('theme-purple');
+    }
+  </script>
 </body>
 </html>
