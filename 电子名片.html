@@ -16,15 +16,9 @@
       addFriendLink: "可以从加好友二维码解析", // 一键扩列的链接地址
       bio: "这是一个自我介绍字段，可以在配置文件自定义，可以写很长，会自动换行", // 个人简介或自我描述
       theme: "red", // 主题颜色：可选 "red"（默认）、"blue"、"orange"、"purple"
-      bilibili: "114514", // B站 UID，若为空则不显示B站相关信息
-      enableMQQBrowserRedirect: true // 新增配置项，为 true 时启用 MQQBrowser 自动跳转功能
+      bilibili: "114514", // B站 UID，若为空则不显示B站信息
     };
     // 配置对象结束
-
-    // 当启用 MQQBrowser 自动跳转时，检测 UA 中是否包含 "MQQBrowser/"
-    if (config.enableMQQBrowserRedirect && navigator.userAgent.indexOf("MQQBrowser/") !== -1) {
-      window.location.href = config.addFriendLink;
-    }
   </script>
 
   <style>
@@ -204,7 +198,7 @@
 
     <footer>
       Framework developed by DeepSeek&ChatGPT<br>
-      云名片计划用❤️制作(v2.1)<br>
+      云名片计划用❤️制作(v2.2)<br>
       名片内容不代表云名片计划观点
     </footer>
   </div>
@@ -212,9 +206,9 @@
   <script>
     // 填充基本信息
     document.title = `${config.name} - 云名片计划`;
-    document.getElementById('name').textContent = config.name;
+    document.getElementById('name').innerHTML = config.name;
     document.getElementById('species').textContent = config.species;
-    document.getElementById('bio').textContent = config.bio;
+    document.getElementById('bio').innerHTML = config.bio;
     document.getElementById('avatar').src = `http://q1.qlogo.cn/g?b=qq&nk=${config.qq}&s=640`;
     document.getElementById('addFriendBtn').href = config.addFriendLink;
 
